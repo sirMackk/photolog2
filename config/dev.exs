@@ -40,3 +40,6 @@ config :photolog2, Photolog2.Repo,
   password: "",
   hostname: "localhost",
   port: 5432
+
+config :photolog2,
+  media_dir: "media"
