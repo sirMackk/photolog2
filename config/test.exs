@@ -17,3 +17,5 @@ config :photolog2, Photolog2.Repo,
   database: "photolog2_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :comeonin, :bcrypt_log_rounds, 4

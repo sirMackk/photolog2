@@ -1,0 +1,9 @@
+<h1>
+  Góry
+</h1>
+
+<%= form_for @conn, session_path(@conn, :create), [as: :session], fn f -> %>
+  <%= text_input f, :username, placeholder: "Username", class: "login-field" %>
+  <%= password_input f, :password, placeholder: "Password", class: "login-field" %>
+  <%= submit "Log in", class: "login-btn" %>
+<% end %>
