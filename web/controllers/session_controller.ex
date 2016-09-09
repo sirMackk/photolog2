@@ -17,4 +17,11 @@ defmodule Photolog2.SessionController do
         |> redirect(to: Photolog2.Router.Helpers.session_path(conn, :new))
     end
   end
+
+  def delete(conn, _params) do
+    conn
+    |> Photolog2.Auth.logout
+    |> put_flash(:info, "See you later!")
+    |> redirect(to: Photolog2.Router.Helpers.session_path(conn, :new))
+  end
 end

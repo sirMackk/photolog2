@@ -39,4 +39,17 @@ defmodule Photolog2.SessionControllerTest do
     assert get_resp_header(conn, "location") == [Helpers.session_path(conn, :new)]
     assert get_flash(conn, :error)
   end
+
+  test "POST to logout will remove session", %{conn: conn} do
+    conn =
+      conn
+      |> bypass_through(Photolog2.Router, [:browser])
+      |> get("/")
+      |> put_session(:user_id, 123)
+      |> post(Helpers.session_path(conn, :delete))
+
+    refute get_session(conn, :user_id)
+    assert get_resp_header(conn, "location") == [Helpers.session_path(conn, :new)]
+    assert get_flash(conn, :info)
+  end
 end

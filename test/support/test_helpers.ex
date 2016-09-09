@@ -11,4 +11,16 @@ defmodule Photolog2.TestHelpers do
   |> Photolog2.User.registration_changeset(changes)
   |> Repo.insert!()
   end
+
+  def insert_album(user, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:albums, attrs)
+    |> Repo.insert!
+  end
+
+  def insert_photo(album, attrs \\ %{}) do
+    album
+    |> Ecto.build_assoc(:photos, attrs)
+    |> Repo.insert!
+  end
 end
