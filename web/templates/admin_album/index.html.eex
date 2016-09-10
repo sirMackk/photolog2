@@ -1,0 +1,24 @@
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Description</td>
+      <td>Status</td>
+      <td>User</td>
+      <td>Created at</td>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for album <- @albums do %>
+      <tr>
+        <td>
+          <%= link album.name, to: admin_album_path(@conn, :edit, album) %>
+        </td>
+        <td><%= album.description %></td>
+        <td><%= album.status %></td>
+        <td><%= album.user.username %></td>
+        <td><%= album.inserted_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
