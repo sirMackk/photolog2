@@ -36,4 +36,15 @@ defmodule Photolog2.AdminAlbumControllerTest do
 
     assert html_response(conn, 200) =~ Helpers.admin_album_path(conn, :edit, album1)
   end
+
+  @tag :login_as_admin
+  test "album edit page contains filled out form", %{conn: conn, user: admin} do
+    album1 = insert_album(admin, %{name: "Album 1"})
+
+    conn = conn
+      |> get(Helpers.admin_album_path(conn, :edit, album1))
+
+    assert html_response(conn, 200) =~ album1.name
+    assert html_response(conn, 200) =~ Helpers.admin_album_path(conn, :update, album1)
+  end
 end

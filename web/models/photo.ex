@@ -13,7 +13,7 @@ defmodule Photolog2.Photo do
 
   @allowed_fields ~w(name, description)
 
-  def changeset(model, params \\ :empty) do
+  def changeset(model, params \\ %{}) do
     model
     |> cast(params, @allowed_fields)
   end
