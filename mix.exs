@@ -36,6 +36,7 @@ defmodule Photolog2.Mixfile do
      {:phoenix_ecto, "~> 3.0.1"},
      {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
+     {:mock, "~> 0.1.1", only: :test},
      {:gettext, "~> 0.9"},
      {:comeonin, "~> 2.5"},
      {:cowboy, "~> 1.0"}]

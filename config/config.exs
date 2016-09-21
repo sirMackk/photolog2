@@ -30,3 +30,5 @@ config :phoenix, :generators,
 
 config :photolog2, ecto_repos: [Photolog2.Repo]
 
+config :photolog2, media_path: "media/"
+
