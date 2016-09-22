@@ -22,7 +22,7 @@ defmodule Photolog2.AdminAlbumController do
 
     case Repo.update(changeset) do
       {:ok, album} ->
-        #Enum.map(Map.get(album_params, "files"), fn file -> process_files(album, file) end)
+        process_files(album, Map.get(album_params, "files", []))
 
         conn
           |> put_flash(:info, "Album updated!")
@@ -34,15 +34,12 @@ defmodule Photolog2.AdminAlbumController do
     end
   end
 
-  def process_files(album, files) do
-    # copy files to right place
-    # resize
-    # create db record with new names
+  def process_files(album, files \\ []) do
     files
-      |> Enum.map(&add_local_filename\1)
-      |> Enum.map(&Task.async(resize_file(&1)))
-      |> Enum.map(&Task.await\1)
-      |> Enum.map(insert_photo_record\1)
+      |> Enum.map(&add_local_filename/1)
+      |> Enum.map(&Task.async(__MODULE__, :resize_file, [&1]))
+      |> Enum.map(&Task.await/1)
+      |> Enum.map(&insert_photo_record(album, &1))
   end
 
   def slugidize(string) do
@@ -51,6 +48,27 @@ defmodule Photolog2.AdminAlbumController do
 
   def add_timestamp(string) do
     Integer.to_string(:os.system_time(:seconds)) <> "_" <> string
+  end
+
+  def add_local_filename(file_struct) do
+    local_filename = Map.get(file_struct, :filename)
+      |> add_timestamp
+      |> slugidize
+    target_path = Path.join(media_path, local_filename)
+    Map.merge(file_struct, %{local_filename: local_filename, local_filepath: target_path})
+  end
+
+  def resize_file(file_struct) do
+    System.cmd("convert", ["-resize", "1920x", file_struct.path, file_struct.local_filepath])
+    file_struct
+  end
+
+  def insert_photo_record(album, file_struct) do
+    %{filename: name, local_filepath: file_name} = file_struct
+
+    album
+      |> Ecto.build_assoc(:photos, %{name: name, file_name: file_name})
+      |> Repo.insert!
   end
 
   def media_path do

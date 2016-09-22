@@ -32,4 +32,3 @@ defmodule Photolog2.Album do
 
   def status_enum, do: @status_enum
 end
-
