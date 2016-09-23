@@ -34,6 +34,37 @@ defmodule Photolog2.AdminAlbumController do
     end
   end
 
+  def new(conn, _params) do
+    user = conn.assigns[:current_user]
+    changeset = user
+                |> build_assoc(:albums)
+                |> Album.changeset()
+    render(conn, "new.html", changeset: changeset)
+  end
+
+  def create(conn, %{"album" => album_params}) do
+    user = conn.assigns[:current_user]
+    changeset = user
+                |> build_assoc(:albums)
+                |> Album.changeset(album_params)
+
+    case Repo.insert(changeset) do
+      {:ok, album} ->
+        process_files(album, Map.get(album_params, "files", []))
+
+        conn
+          |> put_flash(:info, "Album '#{album.name}' created!")
+          |> redirect(to: admin_album_path(conn, :edit, album))
+      {:error, changeset} ->
+        conn
+          |> put_flash(:error, "Fix thy errors!")
+          |> render(conn, "new.html", changeset: changeset)
+    end
+  end
+
+
+  ### TODO: Extract into utils?
+
   def process_files(album, files \\ []) do
     files
       |> Enum.map(&add_local_filename/1)

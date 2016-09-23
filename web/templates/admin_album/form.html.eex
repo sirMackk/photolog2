@@ -17,8 +17,8 @@
   <%= select f, :status, album_status_map, prompt: "Choose a status" %>
   <%= error_tag f, :name %>
 
-  <%= label :album, :photos, "Photos" %>
-  <%= file_input :album, :photos, [multiple: true] %>
+  <%= label :album, :files, "Photos" %>
+  <%= file_input :album, :files, [multiple: true] %>
 
   <%= submit "Save" %>
 <% end %>

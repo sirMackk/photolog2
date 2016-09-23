@@ -125,6 +125,53 @@ defmodule Photolog2.AdminAlbumControllerTest do
     end
   end
 
+  @tag :login_as_admin
+  test "album new page contains empty form", %{conn: conn} do
+
+    conn = conn
+      |> get(Helpers.admin_album_path(conn, :new))
+
+    assert html_response(conn, 200) =~ Helpers.admin_album_path(conn, :create)
+  end
+
+  @tag :login_as_admin
+  test "album create creates a new album and redirects to its edit page", %{conn: conn, user: admin} do
+    album = %{name: "Created Album"}
+
+    conn = conn
+      |> post(Helpers.admin_album_path(conn, :create), album: album)
+
+    assert conn.status == 302
+
+    albums = Repo.preload(admin, :albums).albums
+
+    assert length(albums) == 1
+    [albums] = albums
+
+    assert albums.name == "Created Album"
+  end
+
+  @tag :login_as_admin
+  test "album create creates a new album with multiple photos", %{conn: conn, user: admin} do
+    album = %{name: "Created Album"}
+    upload = %Plug.Upload{path: "test/fixtures/cat400.jpg", filename: "cat400.jpg"}
+
+    with_mock System, [cmd: fn _, _ -> 1 end] do
+      conn = conn
+        |> post(
+          Helpers.admin_album_path(conn, :create),
+          album: Map.merge(album, %{"files": [upload]}))
+
+      assert conn.status == 302
+
+      [album] = Repo.preload(admin, :albums).albums
+      [photo] = Repo.preload(album, :photos).photos
+
+      assert album.name == "Created Album"
+      assert String.contains?(photo.name, "cat400.jpg")
+    end
+  end
+
   test "process files inserts photos into album" do
     admin = insert_user(%{name: "admin"})
     album1 = insert_album(admin, %{name: "Album 1"})
