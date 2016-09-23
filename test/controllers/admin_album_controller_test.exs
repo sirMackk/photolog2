@@ -93,7 +93,6 @@ defmodule Photolog2.AdminAlbumControllerTest do
       [photo] = Repo.preload(album1, :photos).photos
 
       assert String.contains?(photo.file_name, fname)
-      assert String.contains?(photo.file_name, AdminAlbumController.media_path)
     end
   end
 
@@ -121,10 +120,8 @@ defmodule Photolog2.AdminAlbumControllerTest do
       [photo2] = Enum.filter(photos, &(&1.name == fname2))
 
       assert String.contains?(photo1.file_name, fname)
-      assert String.contains?(photo1.file_name, AdminAlbumController.media_path)
 
       assert String.contains?(photo2.file_name, fname2)
-      assert String.contains?(photo2.file_name, AdminAlbumController.media_path)
     end
   end
 
@@ -155,22 +152,20 @@ defmodule Photolog2.AdminAlbumControllerTest do
     assert Regex.match?(~r/\d{10}_some_kind_of_string/, timestamped_str)
   end
 
-  test "add_local_filename adds a localized filename and path to struct" do
+  test "add_local_filename adds a localized filename to struct" do
     file_struct = %{filename: "picture.jpg"}
     file_struct = AdminAlbumController.add_local_filename(file_struct)
-    %{local_filename: fname, local_filepath: fpath} = file_struct
+    %{local_filename: fname} = file_struct
 
     assert Regex.match?(~r/^\d{10}-picture.jpg$/, fname)
-    assert String.contains?(fpath, AdminAlbumController.media_path)
-    assert Regex.match?(~r/\d{10}-picture.jpg$/, fpath)
   end
 
   test "resize_file calls imagemagick 'convert' command and returns file_struct" do
     file_struct = AdminAlbumController.add_local_filename(%{filename: "picture.jpg", path: "media/picture.jpg"})
     with_mock System, [cmd: fn _, _ -> 1 end] do
-      rsp = AdminAlbumController.resize_file(file_struct)
+      rsp = AdminAlbumController.resize_file(file_struct, [prefix: "thumb-"])
 
-      target_path = Path.join(AdminAlbumController.media_path, file_struct.local_filename)
+      target_path = Path.join(AdminAlbumController.media_path, "thumb-" <> file_struct.local_filename)
       assert called System.cmd("convert", ["-resize", "1920x", file_struct.path, target_path])
       assert file_struct == rsp
     end
@@ -179,13 +174,13 @@ defmodule Photolog2.AdminAlbumControllerTest do
   test "insert_photo_record actually inserts a record into the db" do
     admin = insert_user(%{name: "admin"})
     album1 = insert_album(admin, %{name: "Album 1"})
-    file_struct = %{filename: "picture.jpg", local_filepath: "media/picture.jpg"}
+    file_struct = %{filename: "picture.jpg", local_filename: "10-picture.jpg"}
 
     AdminAlbumController.insert_photo_record(album1, file_struct)
 
     photo = List.first(Repo.preload(album1, :photos).photos)
 
     assert photo.name == Map.get(file_struct, :filename)
-    assert photo.file_name == Map.get(file_struct, :local_filepath)
+    assert photo.file_name == Map.get(file_struct, :local_filename)
   end
 end
