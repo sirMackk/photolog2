@@ -9,8 +9,11 @@
     <note priority="high" time="1473163677">
         move over front-end code ie. scss and js
     </note>
-    <note priority="high" time="1473163686">
+    <note priority="high" time="1473163686" done="1474714375">
         set up backend code
+        <comment>
+            Major part of backend code done.
+        </comment>
     </note>
     <note priority="high" time="1473163800">
         write new deployment script

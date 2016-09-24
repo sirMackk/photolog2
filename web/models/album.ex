@@ -27,7 +27,15 @@ defmodule Photolog2.Album do
   end
 
   def all_published(query) do
-    from album in query, where: album.status == ^Map.get(@status_enum, :published)
+    from(album in query, where: album.status == ^Map.get(@status_enum, :published))
+  end
+
+  def newest_first(query) do
+    from(album in query, order_by: [album.inserted_at])
+  end
+
+  def pageinated(query, per_page \\ 5, page \\ 1) do
+    from(album in query, limit: ^per_page, offset: ^(per_page * (page - 1)))
   end
 
   def status_enum, do: @status_enum
