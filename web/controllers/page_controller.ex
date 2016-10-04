@@ -12,6 +12,10 @@ defmodule Photolog2.PageController do
       |> Album.pageinated(@pagination, page)
       |> Album.newest_first
       |> Repo.all
+      |> Repo.preload(:photos)
     render(conn, "index.html", albums: albums)
+  end
+
+  def about(conn, _params) do
   end
 end
