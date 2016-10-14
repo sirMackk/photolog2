@@ -2,7 +2,7 @@
   <div class="about-box">
     <p>Maintained by: <a href="http://mattscodecave.com">Matt</a> &amp; Trznska</p>
   </div>
-  <%= link "About", to: page_path(@conn, :about) %>
+  <%= link "About", to: page_path(@conn, :about), class: "about" %>
   <div class="paginage-me">
     Pagination
   </div>
@@ -17,7 +17,7 @@
     <div class="album">
       <div class="album-meta">
         <div class="date">
-          <p><%= album.inserted_at %></p>
+          <p><%= friendly_date album.inserted_at %></p>
         </div>
       </div>
 

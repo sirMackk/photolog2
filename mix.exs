@@ -19,7 +19,8 @@ defmodule Photolog2.Mixfile do
   def application do
     [mod: {Photolog2, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :phoenix_pubsub, :comeonin]]
+                    :phoenix_ecto, :postgrex, :phoenix_pubsub, :comeonin,
+                    :timex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,6 +40,7 @@ defmodule Photolog2.Mixfile do
      {:mock, "~> 0.1.1", only: :test},
      {:gettext, "~> 0.9"},
      {:comeonin, "~> 2.5"},
+     {:timex, "~> 2.0"},
      {:cowboy, "~> 1.0"}]
   end
 
