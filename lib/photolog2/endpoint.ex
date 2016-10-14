@@ -17,6 +17,9 @@ defmodule Photolog2.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
+
+    plug Plug.Static,
+      at: "/media", from: "media", gzip: false
   end
 
   plug Plug.RequestId

@@ -2,6 +2,7 @@ defmodule Photolog2.AdminAlbumController do
   use Photolog2.Web, :controller
 
   alias Photolog2.Album
+  alias Photolog2.Photo
   alias Photolog2.Router.Helpers
 
   def index(conn, _params) do
@@ -12,11 +13,12 @@ defmodule Photolog2.AdminAlbumController do
 
   def edit(conn, %{"id" => id}) do
     album = Repo.get!(Album, id)
+      |> Repo.preload(:photos)
     changeset = Album.changeset(album)
     render(conn, "edit.html", album: album, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "album" => album_params}) do
+  def update(conn, params = %{"id" => id, "album" => album_params}) do
     album = Repo.get!(Album, id)
     changeset = Album.changeset(album, album_params)
 
@@ -60,6 +62,22 @@ defmodule Photolog2.AdminAlbumController do
           |> put_flash(:error, "Fix thy errors!")
           |> render(conn, "new.html", changeset: changeset)
     end
+  end
+
+  def update_photos(conn, params = %{"id" => id, "photos" => photos}) do
+    for {id, photo_params} <- photos do
+      photo = Repo.get!(Photo, String.to_integer(id))
+      if Map.get(photo_params, "delete") == "true" do
+        Repo.delete(photo)
+      else
+        changeset = Photo.changeset(photo, Map.drop(photo_params, ["delete"]))
+        Repo.update!(changeset)
+      end
+    end
+
+    conn
+      |> put_flash(:info, "Updated album photos!")
+      |> redirect(to: admin_album_path(conn, :edit, id))
   end
 
 

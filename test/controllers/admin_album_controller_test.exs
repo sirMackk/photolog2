@@ -230,4 +230,46 @@ defmodule Photolog2.AdminAlbumControllerTest do
     assert photo.name == Map.get(file_struct, :filename)
     assert photo.file_name == Map.get(file_struct, :local_filename)
   end
+
+  @tag :login_as_admin
+  test "update_photos updates existing photo objects and redirects", %{conn: conn, user: admin} do
+    album = insert_album(admin, %{name: "Album 1"})
+    photo1 = album
+      |> Ecto.build_assoc(:photos, %{name: "p1", file_name: "fname.jpg"})
+      |> Repo.insert!
+    photo2 = album
+      |> Ecto.build_assoc(:photos, %{name: "p2", file_name: "fname2.jpg"})
+      |> Repo.insert!
+
+    conn = conn
+      |> post(Helpers.admin_album_path(conn, :update_photos, album.id),
+              photos: %{photo1.id => %{"delete" => "false", "name": "p1-updated"}})
+
+    photo1 = Repo.get!(Photolog2.Photo, photo1.id)
+
+    assert conn.status == 302
+    assert photo1.name == "p1-updated"
+  end
+
+  @tag :login_as_admin
+  test "update_photos deletes photo objects and redirects", %{conn: conn, user: admin} do
+    album = insert_album(admin, %{name: "Album 1"})
+    photo1 = album
+      |> Ecto.build_assoc(:photos, %{name: "p1", file_name: "fname.jpg"})
+      |> Repo.insert!
+    photo2 = album
+      |> Ecto.build_assoc(:photos, %{name: "p2", file_name: "fname2.jpg"})
+      |> Repo.insert!
+
+    conn = conn
+      |> post(Helpers.admin_album_path(conn, :update_photos, album.id),
+              photos: %{photo1.id => %{"delete" => "true", "name": "p1-updated"},
+                        photo2.id => %{"delete" => "false", "name": "p2-updated"}})
+
+    photo2 = Repo.get!(Photolog2.Photo, photo2.id)
+
+    assert photo2.name == "p2-updated"
+
+    assert nil == Repo.get(Photolog2.Photo, photo1.id)
+  end
 end

@@ -52,6 +52,11 @@ defmodule Photolog2.Web do
       import Photolog2.Router.Helpers
       import Photolog2.ErrorHelpers
       import Photolog2.Gettext
+
+      def media_folder do
+        "/" <> Photolog2.AdminAlbumController.media_path
+      end
+
     end
   end
 

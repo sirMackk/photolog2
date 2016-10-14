@@ -2,4 +2,30 @@
 
 <%= render "form.html", changeset: @changeset, action: admin_album_path(@conn, :update, @album) %>
 
+<%= form_for @conn, admin_album_path(@conn, :update_photos, @album.id), [as: :photos_update], fn f -> %>
+  <%= for photo <- @album.photos do %>
+    <div class="photo">
+      <%= with {delete_name, delete_id} <- album_edit_photo_attrs(photo.id, "delete") do %>
+        <%= label f, delete_name, "Delete photo?" %>
+        <%= checkbox f, delete_id , [name: delete_name] %>
+      <% end %>
+
+      <%= with {name_name, name_id} <- album_edit_photo_attrs(photo.id, "name") do %>
+        <%= label f,  name_name, "Name" %>
+        <%= text_input f, name_id, [value: photo.name, name: name_name] %>
+      <% end %>
+
+      <%= with {desc_name, desc_id} <- album_edit_photo_attrs(photo.id, "description") do %>
+        <%= label f, desc_name, "Description" %>
+        <%= text_input f, desc_id, [value: photo.description, name: desc_name] %>
+      <% end %>
+
+      <img src="<%= media_folder %>thumb-<%= photo.file_name %>" />
+    </div>
+  <% end %>
+  <%= submit "Update" %>
+<% end %>
+
+
+
 <%= link "Back", to: admin_album_path(@conn, :index) %>

@@ -32,6 +32,7 @@ defmodule Photolog2.Router do
     pipe_through [:browser]#, :authenticate_user]
 
     resources "/", AdminAlbumController
+    post "/:id/update-photos", AdminAlbumController, :update_photos
   end
 
 

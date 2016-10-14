@@ -24,7 +24,7 @@
       <div class="photos">
         <%= for photo <- album.photos do %>
           <div class="photo">
-            <img src="thumb_<%= photo.file_name %>" />
+            <img src="<%= media_folder %>thumb-<%= photo.file_name %>" />
             <div class="photo-title"><%= photo.name %></div>
           </div>
         <% end %>

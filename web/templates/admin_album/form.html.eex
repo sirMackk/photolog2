@@ -18,7 +18,7 @@
   <%= error_tag f, :name %>
 
   <%= label :album, :files, "Photos" %>
-  <%= file_input :album, :files, [multiple: true] %>
+  <%= file_input :album, :files, [multiple: true, name: "album[files][]"] %>
 
   <%= submit "Save" %>
 <% end %>
