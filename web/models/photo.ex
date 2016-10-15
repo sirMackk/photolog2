@@ -11,7 +11,7 @@ defmodule Photolog2.Photo do
     timestamps
   end
 
-  @allowed_fields ~w(name description)
+  @allowed_fields ~w(name description file_name)
 
   def changeset(model, params \\ %{}) do
     model

@@ -20,7 +20,7 @@
         <%= text_input f, desc_id, [value: photo.description, name: desc_name] %>
       <% end %>
 
-      <img src="<%= media_folder %>thumb-<%= photo.file_name %>" />
+      <img src="<%= media_folder %>thumb_<%= photo.file_name %>" />
     </div>
   <% end %>
   <%= submit "Update" %>

@@ -3,7 +3,7 @@ defmodule Photolog2.AdminAlbumController do
 
   alias Photolog2.Album
   alias Photolog2.Photo
-  alias Photolog2.Router.Helpers
+  alias Photolog2.ImageProcessor
 
   def index(conn, _params) do
     albums = Repo.all(Album)
@@ -18,13 +18,13 @@ defmodule Photolog2.AdminAlbumController do
     render(conn, "edit.html", album: album, changeset: changeset)
   end
 
-  def update(conn, params = %{"id" => id, "album" => album_params}) do
+  def update(conn, %{"id" => id, "album" => album_params}) do
     album = Repo.get!(Album, id)
     changeset = Album.changeset(album, album_params)
 
     case Repo.update(changeset) do
       {:ok, album} ->
-        process_files(album, Map.get(album_params, "files", []))
+        ImageProcessor.process_files(album, Map.get(album_params, "files", []))
 
         conn
           |> put_flash(:info, "Album updated!")
@@ -52,7 +52,7 @@ defmodule Photolog2.AdminAlbumController do
 
     case Repo.insert(changeset) do
       {:ok, album} ->
-        process_files(album, Map.get(album_params, "files", []))
+        ImageProcessor.process_files(album, Map.get(album_params, "files", []))
 
         conn
           |> put_flash(:info, "Album '#{album.name}' created!")
@@ -64,7 +64,7 @@ defmodule Photolog2.AdminAlbumController do
     end
   end
 
-  def update_photos(conn, params = %{"id" => id, "photos" => photos}) do
+  def update_photos(conn, %{"id" => id, "photos" => photos}) do
     for {id, photo_params} <- photos do
       photo = Repo.get!(Photo, String.to_integer(id))
       if Map.get(photo_params, "delete") == "true" do
@@ -78,54 +78,5 @@ defmodule Photolog2.AdminAlbumController do
     conn
       |> put_flash(:info, "Updated album photos!")
       |> redirect(to: admin_album_path(conn, :edit, id))
-  end
-
-
-  ### TODO: Extract into utils?
-
-  def process_files(album, files \\ []) do
-    files
-      |> Enum.map(&add_local_filename/1)
-      |> Enum.map(&Task.async(__MODULE__, :resize_file, [&1]))
-      |> Enum.map(&Task.await/1)
-      |> Enum.map(&Task.async(__MODULE__, :resize_file, [&1, [size: "300x", prefix: "thumb-"]]))
-      |> Enum.map(&Task.await/1)
-      |> Enum.map(&insert_photo_record(album, &1))
-  end
-
-  def slugidize(string) do
-    Regex.replace(~r/([^a-z0-9.-])+/, String.downcase(string), "-", global: true)
-  end
-
-  def add_timestamp(string) do
-    Integer.to_string(:os.system_time(:seconds)) <> "_" <> string
-  end
-
-  def add_local_filename(file_struct) do
-    local_filename = Map.get(file_struct, :filename)
-      |> add_timestamp
-      |> slugidize
-    Map.merge(file_struct, %{local_filename: local_filename})
-  end
-
-  def resize_file(file_struct, opts \\ []) do
-    defaults = [size: "1920x", prefix: "large-"]
-    opts = Keyword.merge(defaults, opts)
-
-    target_path = Path.join(media_path, opts[:prefix] <> file_struct.local_filename)
-    System.cmd("convert", ["-resize", opts[:size], file_struct.path, target_path])
-    file_struct
-  end
-
-  def insert_photo_record(album, file_struct) do
-    %{filename: name, local_filename: file_name} = file_struct
-
-    album
-      |> Ecto.build_assoc(:photos, %{name: name, file_name: file_name})
-      |> Repo.insert!
-  end
-
-  def media_path do
-    Application.get_env(:photolog2, :media_path)
   end
 end

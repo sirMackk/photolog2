@@ -54,7 +54,7 @@ defmodule Photolog2.Web do
       import Photolog2.Gettext
 
       def media_folder do
-        "/" <> Photolog2.AdminAlbumController.media_path
+        "/" <> Application.get_env(:photolog2, :media_path)
       end
 
     end

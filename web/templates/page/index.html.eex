@@ -24,7 +24,7 @@
       <div class="photos">
         <%= for photo <- album.photos do %>
           <div class="photo">
-            <img src="<%= media_folder %>thumb-<%= photo.file_name %>" />
+            <img src="<%= media_folder %>thumb_<%= photo.file_name %>" />
             <div class="photo-title"><%= photo.name %></div>
           </div>
         <% end %>
@@ -33,7 +33,7 @@
   <% end %>
   <div class="light-box">
     <div class="panel">
-      <a href="javascript;">Close</a>
+      <a href="javascript:;">Close</a>
       <p></p>
     </div>
   </div>
