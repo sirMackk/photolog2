@@ -3,13 +3,13 @@
     <p>Maintained by: <a href="http://mattscodecave.com">Matt</a> &amp; Trznska</p>
   </div>
   <%= link "About", to: page_path(@conn, :about), class: "about" %>
-  <div class="paginage-me">
-    Pagination
+  <div class="paginate-me">
+    <%= paginate(@conn, @current_page, @per_page, @total_albums) %>
   </div>
 </nav>
 
 <header>
-  <h1><%= link "Photoblog", to: page_path(@conn, :index) %></h1>
+  <h1><%= link "Photolog", to: page_path(@conn, :index) %></h1>
 </header>
 
 <div class="wrapper">

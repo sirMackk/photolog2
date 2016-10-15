@@ -34,9 +34,16 @@ defmodule Photolog2.Album do
     from(album in query, order_by: [album.inserted_at])
   end
 
-  def pageinated(query, per_page \\ 5, page \\ 1) do
+  def pageinated(query, per_page \\ 5, page \\ 1)
+  def pageinated(query, per_page, page) when page < 1 do
+    pageinated(query, per_page, 1)
+  end
+
+  def pageinated(query, per_page, page) do
     from(album in query, limit: ^per_page, offset: ^(per_page * (page - 1)))
   end
+
+  def total_albums(query), do: from(p in query, select: count("id"))
 
   def status_enum, do: @status_enum
 end

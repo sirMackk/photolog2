@@ -37,7 +37,7 @@ defmodule Photolog2.AdminAlbumController do
   end
 
   def new(conn, _params) do
-    user = conn.assigns[:current_user]
+    user = conn.assigns.current_user
     changeset = user
                 |> build_assoc(:albums)
                 |> Album.changeset()

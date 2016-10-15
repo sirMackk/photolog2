@@ -56,7 +56,6 @@ defmodule Photolog2.Web do
       def media_folder do
         "/" <> Application.get_env(:photolog2, :media_path)
       end
-
     end
   end
 
