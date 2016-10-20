@@ -1,6 +1,7 @@
 // http://www.paulirish.com/2012/box-sizing-border-box-ftw/
 html {
   box-sizing: border-box;
+  background-color: $col-bg-gray;
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -22,14 +23,16 @@ nav {
   right: 35px;
   width: 12%;
   text-align: right;
+  z-index: 10;
 
   .about-box {
     position: absolute;
     z-index: 10;
     background-color: white;
-    top: -70px;
-    width: 130%;
+    top: -85px;
+    width: 145%;
     right: -200%;
+    padding: 0 15px;
     transition: all 0.2s ease-in-out;
   }
 

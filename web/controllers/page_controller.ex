@@ -27,9 +27,6 @@ defmodule Photolog2.PageController do
            total_albums: total_albums)
   end
 
-  def about(conn, _params) do
-  end
-
   defp positivize(num) do
     if num > 0, do: num, else: 1
   end

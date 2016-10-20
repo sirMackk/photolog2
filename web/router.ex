@@ -24,12 +24,10 @@ defmodule Photolog2.Router do
     post "/papa", SessionController, :delete
 
     get "/", PageController, :index
-    get "/about", PageController, :about
-
   end
 
   scope "/gory", Photolog2 do
-    pipe_through [:browser]#, :authenticate_user]
+    pipe_through [:browser, :authenticate_user]
 
     resources "/", AdminAlbumController
     post "/:id/update-photos", AdminAlbumController, :update_photos

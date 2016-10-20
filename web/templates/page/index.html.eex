@@ -2,7 +2,7 @@
   <div class="about-box">
     <p>Maintained by: <a href="http://mattscodecave.com">Matt</a> &amp; Trznska</p>
   </div>
-  <%= link "About", to: page_path(@conn, :about), class: "about" %>
+  <%= link "About", to: "javascript:;", class: "about" %>
   <div class="paginate-me">
     <%= paginate(@conn, @current_page, @per_page, @total_albums) %>
   </div>

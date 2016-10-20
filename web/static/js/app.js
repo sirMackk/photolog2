@@ -15,25 +15,38 @@ $(document).ready(function() {
   })(Zepto);
 
   (function($, undefined) {
+    var html = $('html');
     var about = $('.about');
     var aboutBox = $('.about-box');
     var toggle = false;
 
+    var toggleAboutOn = function() {
+      toggle = true;
+      aboutBox.css({'right': 0});
+    }
+
+    var toggleAboutOff = function(e) {
+      toggle = false;
+      aboutBox.css({'right': '-200%'});
+    }
+
     about.on('click', function(e) {
       e.preventDefault();
+      e.stopPropagation();
 
       if (toggle) {
-        toggle = false;
-        aboutBox.css({'right': '-200%'});
+        toggleAboutOff();
       } else {
-        toggle = true;
-        aboutBox.css({'right': 0});
+        toggleAboutOn();
       }
     });
+
+    html.on('click', function(e) {
+      e.preventDefault();
+
+      toggleAboutOff();
+    });
   })(Zepto);
-
-
-
 
   // init lightbox for first batch of albums
   (function($, undefined) {
