@@ -3,7 +3,6 @@ defmodule Photolog2.AdminAlbumControllerTest do
   import Photolog2.TestHelpers
   import Mock
   alias Photolog2.Router.Helpers
-  alias Photolog2.AdminAlbumController
 
   setup(%{conn: conn} = config) do
     if config[:login_as_admin] do
@@ -178,7 +177,7 @@ defmodule Photolog2.AdminAlbumControllerTest do
     photo1 = album
       |> Ecto.build_assoc(:photos, %{name: "p1", file_name: "fname.jpg"})
       |> Repo.insert!
-    photo2 = album
+    _photo2 = album
       |> Ecto.build_assoc(:photos, %{name: "p2", file_name: "fname2.jpg"})
       |> Repo.insert!
 
@@ -202,7 +201,7 @@ defmodule Photolog2.AdminAlbumControllerTest do
       |> Ecto.build_assoc(:photos, %{name: "p2", file_name: "fname2.jpg"})
       |> Repo.insert!
 
-    conn = conn
+    _conn = conn
       |> post(Helpers.admin_album_path(conn, :update_photos, album.id),
               photos: %{photo1.id => %{"delete" => "true", "name": "p1-updated"},
                         photo2.id => %{"delete" => "false", "name": "p2-updated"}})

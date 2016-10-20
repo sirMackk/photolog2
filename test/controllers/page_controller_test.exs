@@ -4,10 +4,11 @@ defmodule Photolog2.PageControllerTest do
   import Photolog2.TestHelpers
 
   alias Photolog2.Album
+  alias Photolog2.PageView
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert html_response(conn, 200) =~ "Photoblog"
+    assert html_response(conn, 200) =~ "Photolog"
   end
 
   test "GET home should show albums", %{conn: conn} do
@@ -19,7 +20,7 @@ defmodule Photolog2.PageControllerTest do
     conn = conn
       |> get("/")
 
-    assert html_response(conn, 200) =~ "Album 1"
-    assert html_response(conn, 200) =~ "Album 2"
+    assert html_response(conn, 200) =~ PageView.friendly_date(album1.inserted_at)
+    assert html_response(conn, 200) =~ PageView.friendly_date(album2.inserted_at)
   end
 end

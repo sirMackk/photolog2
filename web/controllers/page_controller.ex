@@ -9,8 +9,6 @@ defmodule Photolog2.PageController do
       |> String.to_integer
       |> positivize
 
-    IO.puts page
-
     total_albums = Album
       |> Album.total_albums
       |> Repo.one!
