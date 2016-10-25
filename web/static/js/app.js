@@ -42,8 +42,6 @@ $(document).ready(function() {
     });
 
     html.on('click', function(e) {
-      e.preventDefault();
-
       toggleAboutOff();
     });
   })(Zepto);

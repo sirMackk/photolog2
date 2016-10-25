@@ -31,6 +31,7 @@ defmodule Photolog2.Router do
 
     resources "/", AdminAlbumController
     post "/:id/update-photos", AdminAlbumController, :update_photos
+    get "/:id/delete", AdminAlbumController, :get_delete
   end
 
 

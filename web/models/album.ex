@@ -8,7 +8,7 @@ defmodule Photolog2.Album do
     field :description, :string
     field :status, :integer, default: 0
 
-    has_many :photos, Photolog2.Photo
+    has_many :photos, Photolog2.Photo, on_delete: :delete_all
     belongs_to :user, Photolog2.User
 
     timestamps
@@ -31,7 +31,7 @@ defmodule Photolog2.Album do
   end
 
   def newest_first(query) do
-    from(album in query, order_by: [album.inserted_at])
+    from(album in query, order_by: [desc: album.inserted_at])
   end
 
   def pageinated(query, per_page \\ 5, page \\ 1)

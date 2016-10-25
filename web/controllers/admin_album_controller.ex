@@ -6,7 +6,9 @@ defmodule Photolog2.AdminAlbumController do
   alias Photolog2.ImageProcessor
 
   def index(conn, _params) do
-    albums = Repo.all(Album)
+    albums = Album
+      |> Album.newest_first
+      |> Repo.all
       |> Repo.preload(:user)
     render(conn, "index.html", albums: albums)
   end
@@ -78,5 +80,13 @@ defmodule Photolog2.AdminAlbumController do
     conn
       |> put_flash(:info, "Updated album photos!")
       |> redirect(to: admin_album_path(conn, :edit, id))
+  end
+
+  def get_delete(conn, %{"id" => id}) do
+    album = Repo.get!(Album, String.to_integer(id))
+    Repo.delete!(album)
+    conn
+      |> put_flash(:info, "Deleted album: #{album.id}")
+      |> redirect(to: admin_album_path(conn, :index))
   end
 end
